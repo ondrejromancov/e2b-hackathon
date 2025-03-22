@@ -8,6 +8,7 @@ import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { useSearchParams } from "next/navigation"
+import { useRoadmap } from "@/context/roadmap-context"
 
 interface InteractiveExerciseGeneratorProps {
   onExerciseGenerated: (preview: {
@@ -27,10 +28,30 @@ export function InteractiveExerciseGenerator({
   })
   const searchParams = useSearchParams()
   const lessonTitle = searchParams.get("title") || "Interactive Power Function Visualization"
+  const activeType = searchParams.get("type")
+  const activeId = searchParams.get("id")
+  const { roadmapData } = useRoadmap()
 
   console.log("isLoading", isLoading)
   console.log("error", error)
   console.log("object", object)
+
+  // Find the current lesson based on URL parameters
+  const getCurrentLesson = () => {
+    if (activeType === "lesson" && roadmapData) {
+      for (const moduleItem of roadmapData.modules) {
+        const lesson = moduleItem.lessons.find(
+          lesson => lesson.id.toString() === activeId || lesson.title === lessonTitle
+        )
+        if (lesson) {
+          return lesson
+        }
+      }
+    }
+    return null
+  }
+
+  const currentLesson = getCurrentLesson()
 
   function generateExercise(input: LessonInput) {
     submit(input)
@@ -75,6 +96,11 @@ export function InteractiveExerciseGenerator({
     )
   }
 
+  // Get the lesson description or use a default if not available
+  const lessonDescription =
+    currentLesson?.description +
+    "A graph, chart or small app showing the selected lesson title in an interactive way. For example sliders, input fields or buttons playing animations"
+
   return (
     <>
       <Button
@@ -82,8 +108,7 @@ export function InteractiveExerciseGenerator({
         onClick={() =>
           generateExercise({
             title: lessonTitle,
-            description:
-              "A graph, chart or small app showing the selected lesson title in an interactive way. For example sliders, input fields or buttons playing animations",
+            description: lessonDescription,
           })
         }
       >
