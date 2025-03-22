@@ -8,7 +8,7 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, level, ageGroup } = await request.json()
+    const { subject, level, ageGroup, learningMethod, interests } = await request.json()
 
     // Validate required fields
     if (!subject || !level || !ageGroup) {
@@ -18,6 +18,9 @@ export async function POST(request: NextRequest) {
     // Create a prompt for OpenAI to generate a structured roadmap
     const prompt = `
       Create a detailed learning roadmap for ${subject} at a ${level} level for ${ageGroup}.
+      
+      ${learningMethod ? `The preferred learning method is: ${learningMethod}.` : ''}
+      ${interests ? `The learner is interested in: ${interests}.` : ''}
 
       The roadmap should include:
       1. A course title
@@ -45,6 +48,8 @@ export async function POST(request: NextRequest) {
       }
 
       Make sure the content is educational, age-appropriate, and follows a logical progression from basic to more advanced concepts.
+      ${learningMethod ? `Incorporate the ${learningMethod} learning method into the lessons where appropriate.` : ''}
+      ${interests ? `Try to incorporate elements related to ${interests} where relevant to make the content more engaging.` : ''}
     `
 
     // Call OpenAI API to generate the roadmap
