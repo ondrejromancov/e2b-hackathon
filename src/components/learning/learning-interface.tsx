@@ -13,6 +13,7 @@ const initialMessages: Message[] = [
     content:
       "Hello! I'm your AI learning assistant. I'm here to help you understand the concepts of your chosen subject. What would you like to learn about today?",
     timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+    role: "assistant", // Add role for OpenAI API
   },
 ]
 
@@ -21,34 +22,63 @@ export default function LearningInterface() {
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [inputValue, setInputValue] = useState("")
 
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (!inputValue.trim()) return
-
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!inputValue.trim()) return;
+  
     // Add user message
     const userMessage: Message = {
       id: messages.length + 1,
       sender: "user",
       content: inputValue,
       timestamp: new Date().toISOString(),
-    }
-
-    setMessages(prev => [...prev, userMessage])
-    setInputValue("")
-
-    // Simulate AI response (in a real app, this would be an API call)
-    setTimeout(() => {
+      role: "user", // Add role for OpenAI API
+    };
+  
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue("");
+  
+    try {
+      // Call chat API
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...messages, userMessage] }),
+      });
+  
+      const data = await response.json();
+  
+      // Log the full response for debugging
+      console.log('API Response:', data);
+  
+      if (data.error) {
+        throw new Error(data.error + (data.details ? `: ${data.details}` : ''));
+      }
+  
       const aiResponse: Message = {
         id: messages.length + 2,
         sender: "ai",
-        content: `I understand you're interested in learning about "${inputValue}". Let's explore this topic together. This is a placeholder response that would be replaced with real AI-generated content in the full implementation.`,
+        content: data.message || "Sorry, I couldn't generate a response.",
         timestamp: new Date().toISOString(),
-      }
-
-      setMessages(prev => [...prev, aiResponse])
-    }, 1000)
-  }
+        role: "assistant", // Add role for OpenAI API
+      };
+  
+      setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      const errorMessage: Message = {
+        id: messages.length + 2,
+        sender: "ai",
+        content: error instanceof Error 
+          ? `Sorry, I'm having trouble responding: ${error.message}` 
+          : "Sorry, I'm having trouble responding right now. Please try again.",
+        timestamp: new Date().toISOString(),
+        role: "assistant", // Add role for OpenAI API
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[calc(100vh-150px)]">

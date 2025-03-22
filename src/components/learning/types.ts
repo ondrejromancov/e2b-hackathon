@@ -4,4 +4,6 @@ export type Message = {
   sender: "user" | "ai";
   content: string;
   timestamp: string;
+  // Optional role for OpenAI API compatibility
+  role?: "user" | "assistant" | "system";
 };
