@@ -33,7 +33,6 @@ interface RoadmapProps {
 
 export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   const router = useRouter()
-  const [expandedModule, setExpandedModule] = useState<string | null>(null)
   const [selectedModule, setSelectedModule] = useState<RoadmapModule | null>(null)
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -74,17 +73,6 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
 
     loadSavedRoadmaps()
   }, [roadmap])
-
-  // Calculate overall progress
-  const totalLessons = roadmap.modules.reduce((total, module) => total + module.lessons.length, 0)
-
-  const completedLessons = roadmap.modules.reduce(
-    (total, module) => total + module.lessons.filter(lesson => lesson.completed).length,
-    0
-  )
-
-  const progressPercentage =
-    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
 
   // Update dimensions on resize
   useEffect(() => {
@@ -194,39 +182,17 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
     setSelectedLesson(null)
   }
 
-  // Function to start new skill onboarding
-  const handleLearnNewSkill = () => {
-    router.push("/onboarding")
-  }
-
-  // Function to add a new roadmap after onboarding
-  const addNewRoadmap = (newRoadmap: {
-    courseName: string
-    modules: RoadmapModule[]
-    learningMethod?: string
-    interests?: string
-  }) => {
-    // Add the new roadmap to the existing roadmaps
-    const updatedRoadmaps = [...roadmaps, newRoadmap]
-    setRoadmaps(updatedRoadmaps)
-
-    // Save to localStorage
-    localStorage.setItem("savedRoadmaps", JSON.stringify(updatedRoadmaps))
-  }
-
   return (
     <div className="space-y-6 h-screen w-screen overflow-hidden">
       <div className="text-center mb-4 pt-4">
-        <h1 className="text-3xl font-bold mb-2">Your Learning Roadmaps</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          {roadmaps.length === 1 ? roadmaps[0].courseName : "Your personalized learning path"}
+        </h1>
         <p className="text-muted-foreground">
           {roadmaps.length > 1
             ? `${roadmaps.length} roadmaps with your personalized learning paths`
             : "Your personalized learning path"}
         </p>
-        <div className="mt-2 text-sm text-muted-foreground">
-          <span className="inline-block w-3 h-3 rounded-full bg-primary mr-2"></span>
-          Click on a node to view details
-        </div>
       </div>
 
       <Card className="relative h-[calc(100vh-120px)]">

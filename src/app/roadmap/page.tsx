@@ -21,31 +21,9 @@ export default function RoadmapPage() {
     const savedRoadmapsString = localStorage.getItem("savedRoadmaps")
     const savedRoadmaps = savedRoadmapsString ? JSON.parse(savedRoadmapsString) : []
 
-    // Get query parameters
-    const subject = searchParams.get("subject")
-    const level = searchParams.get("level")
-    const ageGroup = searchParams.get("ageGroup")
-    const learningMethod = searchParams.get("learningMethod")
-    const interests = searchParams.get("interests")
-
     // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
     if (savedRoadmaps.length > 0 && !searchParams.has("subject")) {
       setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
-      setIsLoading(false)
-      return
-    }
-
-    // Check if we already have a roadmap with the same subject, level, and ageGroup
-    const existingRoadmap = savedRoadmaps.find(
-      (roadmap: any) =>
-        roadmap.subject === subject && roadmap.level === level && roadmap.ageGroup === ageGroup
-    )
-
-    if (existingRoadmap) {
-      console.log(
-        "Found existing roadmap with the same parameters, using it instead of generating a new one"
-      )
-      setRoadmapData(existingRoadmap)
       setIsLoading(false)
       return
     }
