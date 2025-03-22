@@ -4,6 +4,7 @@ import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import LearningSidebar from "@/components/learning/learning-sidebar"
 
 export default function LearnPage() {
   return (
