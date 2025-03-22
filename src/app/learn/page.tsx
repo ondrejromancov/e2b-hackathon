@@ -23,7 +23,7 @@ export default function LearnPage() {
               </div>
             </div>
             <Suspense fallback={<div className="p-4">Loading roadmap...</div>}>
-              {/*<LearningSidebar />*/}
+              <LearningSidebar />
             </Suspense>
           </div>
         </aside>

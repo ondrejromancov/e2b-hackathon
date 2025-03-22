@@ -7,13 +7,14 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import RoadmapDisplay from "@/components/roadmap/roadmap-display"
 import { OnboardingFormData } from "@/lib/types"
+import { useRoadmap } from "@/context/roadmap-context"
 
 export default function RoadmapPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [roadmapData, setRoadmapData] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { roadmapData, setRoadmapData } = useRoadmap()
 
   useEffect(() => {
     // Check if we already have saved roadmaps
@@ -26,13 +27,6 @@ export default function RoadmapPage() {
     const ageGroup = searchParams.get("ageGroup")
     const learningMethod = searchParams.get("learningMethod")
     const interests = searchParams.get("interests")
-
-    // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
-    if (savedRoadmaps.length > 0 && !searchParams.has("subject")) {
-      setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
-      setIsLoading(false)
-      return
-    }
 
     // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
     if (savedRoadmaps.length > 0 && !searchParams.has("subject")) {
@@ -107,7 +101,7 @@ export default function RoadmapPage() {
     }
 
     generateRoadmap(searchParams.get("id") ?? "")
-  }, [searchParams, router])
+  }, [searchParams, router, setRoadmapData])
 
   if (isLoading) {
     return (

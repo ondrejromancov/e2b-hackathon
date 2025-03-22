@@ -353,9 +353,14 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                       );
                     } else {
                       const lesson = node.item as Lesson;
+                      // Find which module this lesson belongs to
+                      const moduleIndex = roadmap.modules.findIndex(module => 
+                        module.lessons.some(l => l.id === lesson.id)
+                      );
+                      
                       return (
                         <div 
-                          key={`lesson-${roadmapIndex}-${lesson.id}`}
+                          key={`lesson-${roadmapIndex}-${moduleIndex}-${lesson.id}`}
                           className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 ${
                             selectedLesson?.id === lesson.id ? 'scale-110 z-20' : 'hover:scale-105 z-10'
                           }`}

@@ -5,77 +5,32 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { CheckCircle, CircleDashed } from "lucide-react"
-
-// Default roadmap data in case nothing is in localStorage
-interface RoadmapData {
-  courseName: string
-  progress: number
-  modules: {
-    id: number
-    title: string
-    completed: boolean
-    lessons: {
-      id: number
-      title: string
-      completed: boolean
-    }[]
-  }[]
-}
-
-const defaultRoadmapData: RoadmapData = {
-  courseName: "Introduction to Computer Science",
-  progress: 0,
-  modules: [
-    {
-      id: 1,
-      title: "Getting Started with Programming",
-      completed: false,
-      lessons: [
-        { id: 1, title: "Introduction to Computing", completed: false },
-        { id: 2, title: "Setting Up Your Environment", completed: false },
-        { id: 3, title: "Your First Program", completed: false },
-      ],
-    },
-  ],
-}
+import { useRoadmap } from "@/context/roadmap-context"
 
 export default function LearningSidebar() {
-  const [roadmapData, setRoadmapData] = useState(defaultRoadmapData)
+  const { roadmapData, updateProgress } = useRoadmap()
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    // Retrieve roadmap data from localStorage
-    const storedRoadmap = localStorage.getItem("roadmapData")
-    if (storedRoadmap) {
-      try {
-        const parsedRoadmap: RoadmapData = JSON.parse(storedRoadmap)
-
-        // Add completed property to modules and lessons if not present
-        const processedRoadmap = {
-          ...parsedRoadmap,
-          modules: parsedRoadmap.modules.map(module => ({
-            ...module,
-            completed: false,
-            lessons: module.lessons.map(lesson => ({
-              ...lesson,
-              completed: false,
-            })),
-          })),
-        }
-
-        setRoadmapData(processedRoadmap)
-
-        // Calculate progress (all lessons start as not completed)
-        setProgress(0)
-      } catch (error) {
-        console.error("Error parsing roadmap data:", error)
-      }
+    if (roadmapData) {
+      setProgress(roadmapData.progress || 0)
     }
-  }, [])
+  }, [roadmapData])
+
+  // Run updateProgress only once when component mounts
+  useEffect(() => {
+    if (roadmapData) {
+      updateProgress()
+    }
+  }, []) // Empty dependency array means this runs once on mount
 
   const handleGenerateNewLessons = () => {
     // This would typically trigger a new API call to generate more content
     alert("This feature would generate new lessons based on your progress and interests.")
+  }
+
+  if (!roadmapData) {
+    return <div className="p-4">Loading roadmap data...</div>
   }
 
   return (
