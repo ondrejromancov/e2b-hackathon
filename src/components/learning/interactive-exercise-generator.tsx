@@ -7,6 +7,7 @@ import { ExecutionResult, LessonInput } from "@/lib/types"
 import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { useSearchParams } from "next/navigation"
 
 interface InteractiveExerciseGeneratorProps {
   onExerciseGenerated: (preview: {
@@ -24,6 +25,8 @@ export function InteractiveExerciseGenerator({
     api: "/api/interactive-app",
     schema: interactiveAppSchema,
   })
+  const searchParams = useSearchParams()
+  const lessonTitle = searchParams.get("title") || "Interactive Power Function Visualization"
 
   console.log("isLoading", isLoading)
   console.log("error", error)
@@ -78,9 +81,9 @@ export function InteractiveExerciseGenerator({
         variant="outline"
         onClick={() =>
           generateExercise({
-            title: "Interactive Power Function Visualization",
+            title: lessonTitle,
             description:
-              "Interactive graph showing how different power functions (y = x^n) behave. A slider should adjust the power to change the line curve",
+              "A graph, chart or small app showing the selected lesson title in an interactive way. For example sliders, input fields or buttons playing animations",
           })
         }
       >
