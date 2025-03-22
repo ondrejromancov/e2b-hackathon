@@ -59,7 +59,10 @@ export function InteractiveExerciseGenerator({
               <p className="text-muted-foreground mb-4">
                 This area will contain interactive elements related to your learning topic.
               </p>
-              <Button variant="outline" onClick={() => onStartSampleExercise(object as InteractiveApp)}>
+              <Button
+                variant="outline"
+                onClick={() => onStartSampleExercise(object as InteractiveApp)}
+              >
                 Start Interactive Exercise
               </Button>
             </div>

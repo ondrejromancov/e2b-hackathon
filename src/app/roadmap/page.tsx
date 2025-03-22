@@ -19,16 +19,16 @@ export default function RoadmapPage() {
     // Check if we already have saved roadmaps
     const savedRoadmapsString = localStorage.getItem("savedRoadmaps")
     const savedRoadmaps = savedRoadmapsString ? JSON.parse(savedRoadmapsString) : []
-    
+
     // Get query parameters
     const subject = searchParams.get("subject")
     const level = searchParams.get("level")
     const ageGroup = searchParams.get("ageGroup")
     const learningMethod = searchParams.get("learningMethod")
     const interests = searchParams.get("interests")
-    
+
     // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
-    if (savedRoadmaps.length > 0 && !searchParams.has('subject')) {
+    if (savedRoadmaps.length > 0 && !searchParams.has("subject")) {
       setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
       setIsLoading(false)
       return
@@ -40,17 +40,17 @@ export default function RoadmapPage() {
       setIsLoading(false)
       return
     }
-    
+
     // Check if we already have a roadmap with the same subject, level, and ageGroup
     const existingRoadmap = savedRoadmaps.find(
-      (roadmap: any) => 
-        roadmap.subject === subject && 
-        roadmap.level === level && 
-        roadmap.ageGroup === ageGroup
+      (roadmap: any) =>
+        roadmap.subject === subject && roadmap.level === level && roadmap.ageGroup === ageGroup
     )
-    
+
     if (existingRoadmap) {
-      console.log("Found existing roadmap with the same parameters, using it instead of generating a new one")
+      console.log(
+        "Found existing roadmap with the same parameters, using it instead of generating a new one"
+      )
       setRoadmapData(existingRoadmap)
       setIsLoading(false)
       return
@@ -87,14 +87,12 @@ export default function RoadmapPage() {
         }
 
         const data = await response.json()
-        const newRoadmap = data.roadmap;
-        setRoadmapData(newRoadmap);
-        
+        const newRoadmap = data.roadmap
+        setRoadmapData(newRoadmap)
+
         // Check if this roadmap already exists in saved roadmaps by ID
-        const roadmapExists = savedRoadmaps.some(
-          (roadmap: any) => roadmap.id === newRoadmap.id
-        );
-        
+        const roadmapExists = savedRoadmaps.some((roadmap: any) => roadmap.id === newRoadmap.id)
+
         if (!roadmapExists) {
           // Add the new roadmap to saved roadmaps
           const updatedRoadmaps = [...savedRoadmaps, newRoadmap]
@@ -110,10 +108,6 @@ export default function RoadmapPage() {
 
     generateRoadmap(searchParams.get("id") ?? "")
   }, [searchParams, router])
-
-  const handleStartLearning = () => {
-    router.push("/learn")
-  }
 
   if (isLoading) {
     return (
@@ -150,8 +144,7 @@ export default function RoadmapPage() {
     return (
       <div className="container py-8 max-w-6xl">
         <RoadmapDisplay roadmap={roadmapData} />
-        <div className="mt-8 flex justify-center">
-        </div>
+        <div className="mt-8 flex justify-center"></div>
       </div>
     )
   }
