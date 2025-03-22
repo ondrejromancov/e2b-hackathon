@@ -1,22 +1,24 @@
 import { InteractiveAppSchema } from "@/lib/schema"
-import { ExecutionResultInterpreter, ExecutionResultWeb } from "@/lib/types"
+import { ExecutionResultWeb } from "@/lib/types"
 import { Sandbox } from "@e2b/code-interpreter"
 
 const sandboxTimeout = 10 * 60 * 1000 // 10 minute in ms
 
 export const maxDuration = 60
 
+const apiKey = process.env.E2B_API_KEY
+
 export async function POST(req: Request) {
   const { fragment, userID }: { fragment: InteractiveAppSchema; userID: string } = await req.json()
   console.log("fragment", fragment)
   console.log("userID", userID)
-  // console.log('apiKey', apiKey)
+  console.log("apiKey", apiKey)
 
   // Create a interpreter or a sandbox
   const sbx = await Sandbox.create(fragment.template, {
     metadata: { template: fragment.template, userID: userID },
     timeoutMs: sandboxTimeout,
-    apiKey: process.env.E2B_API_KEY,
+    apiKey,
   })
 
   // Install packages
@@ -41,20 +43,20 @@ export async function POST(req: Request) {
   }
 
   // Execute code or return a URL to the running sandbox
-  if (fragment.template === "code-interpreter-v1") {
-    const { logs, error, results } = await sbx.runCode(fragment.code || "")
+  //   if (fragment.template === "code-interpreter-v1") {
+  //     const { logs, error, results } = await sbx.runCode(fragment.code || "")
 
-    return new Response(
-      JSON.stringify({
-        sbxId: sbx?.sandboxId,
-        template: fragment.template,
-        stdout: logs.stdout,
-        stderr: logs.stderr,
-        runtimeError: error,
-        cellResults: results,
-      } as ExecutionResultInterpreter)
-    )
-  }
+  //     return new Response(
+  //       JSON.stringify({
+  //         sbxId: sbx?.sandboxId,
+  //         template: fragment.template,
+  //         stdout: logs.stdout,
+  //         stderr: logs.stderr,
+  //         runtimeError: error,
+  //         cellResults: results,
+  //       } as ExecutionResultInterpreter)
+  //     )
+  //   }
 
   return new Response(
     JSON.stringify({
