@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Badge } from "@/components/ui/badge"
-import { CheckCircle, CircleDashed, X, Plus } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { CheckCircle, CircleDashed, X } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Card } from "../ui/card"
 
@@ -15,7 +14,7 @@ interface Lesson {
   completed?: boolean
 }
 
-interface Module {
+interface RoadmapModule {
   id: number
   title: string
   description: string
@@ -26,7 +25,7 @@ interface Module {
 interface RoadmapProps {
   roadmap: {
     courseName: string
-    modules: Module[]
+    modules: RoadmapModule[]
     learningMethod?: string
     interests?: string
   }
@@ -35,7 +34,7 @@ interface RoadmapProps {
 export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   const router = useRouter()
   const [expandedModule, setExpandedModule] = useState<string | null>(null)
-  const [selectedModule, setSelectedModule] = useState<Module | null>(null)
+  const [selectedModule, setSelectedModule] = useState<RoadmapModule | null>(null)
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [dimensions, setDimensions] = useState({
@@ -43,7 +42,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
     height: window.innerHeight,
   })
   const [roadmaps, setRoadmaps] = useState<
-    { courseName: string; modules: Module[]; learningMethod?: string; interests?: string }[]
+    { courseName: string; modules: RoadmapModule[]; learningMethod?: string; interests?: string }[]
   >([])
 
   // Load saved roadmaps from localStorage on initial render
@@ -111,7 +110,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
     roadmapIndex: number,
     roadmapData: {
       courseName: string
-      modules: Module[]
+      modules: RoadmapModule[]
       learningMethod?: string
       interests?: string
     }
@@ -127,7 +126,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
       x: number
       y: number
       type: "module" | "lesson"
-      item: Module | Lesson
+      item: RoadmapModule | Lesson
       order: number
     }[] = []
 
@@ -168,7 +167,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   }
 
   // Function to handle module selection
-  const handleModuleSelect = (module: Module) => {
+  const handleModuleSelect = (module: RoadmapModule) => {
     setSelectedModule(module === selectedModule ? null : module)
     setSelectedLesson(null)
 
@@ -203,7 +202,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   // Function to add a new roadmap after onboarding
   const addNewRoadmap = (newRoadmap: {
     courseName: string
-    modules: Module[]
+    modules: RoadmapModule[]
     learningMethod?: string
     interests?: string
   }) => {
@@ -338,23 +337,23 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                   {/* Render all nodes (modules and lessons) */}
                   {nodePositions.map((node, index) => {
                     if (node.type === "module") {
-                      const module = node.item as Module
+                      const moduleNode = node.item as RoadmapModule
                       return (
                         <div
-                          key={`module-${roadmapIndex}-${module.id}`}
+                          key={`module-${roadmapIndex}-${moduleNode.id}`}
                           className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 ${
-                            selectedModule?.id === module.id
+                            selectedModule?.id === moduleNode.id
                               ? "scale-110 z-20"
                               : "hover:scale-105 z-10"
                           }`}
                           style={{ left: `${node.x}px`, top: `${node.y}px` }}
-                          onClick={() => handleModuleSelect(module)}
+                          onClick={() => handleModuleSelect(moduleNode)}
                         >
                           <div
                             className={`flex items-center justify-center rounded-full ${
                               index === 0
                                 ? "w-20 h-20 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
-                                : module.completed
+                                : moduleNode.completed
                                 ? "w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white"
                                 : "w-16 h-16 bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground"
                             } shadow-lg border-4 border-white`}
@@ -365,7 +364,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                           </div>
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 text-center whitespace-nowrap font-medium">
                             <span className="bg-white/80 px-2 py-1 rounded text-sm shadow-sm">
-                              {module.title}
+                              {moduleNode.title}
                             </span>
                           </div>
                         </div>
@@ -379,7 +378,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
 
                       return (
                         <div
-                          key={`lesson-${roadmapIndex}-${moduleIndex}-${lesson.id}`}
+                          key={`${node.item.title}-lesson-${roadmapIndex}-${moduleIndex}-${lesson.id}`}
                           className={`absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 ${
                             selectedLesson?.id === lesson.id
                               ? "scale-110 z-20"

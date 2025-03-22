@@ -19,6 +19,8 @@ interface InteractiveExerciseGeneratorProps {
   }) => void
   onStartSampleExercise: (interactiveApp: InteractiveApp) => void
 }
+const str = Math.random()
+const codeOrFunctionsOrInstructions = str > 0.5 ? "Code" : str > 0.25 ? "Functions" : "Instructions"
 
 export function InteractiveExerciseGenerator({
   onExerciseGenerated,
@@ -37,6 +39,8 @@ export function InteractiveExerciseGenerator({
   console.log("isLoading", isLoading)
   console.log("error", error)
   console.log("object", object)
+
+  const [exerciseStarting, setExerciseStarting] = useState(false)
 
   // Find the current lesson based on URL parameters
   const getCurrentLesson = () => {
@@ -79,7 +83,12 @@ export function InteractiveExerciseGenerator({
   }, [isLoading, progress])
 
   if (isLoading) {
-    return <Progress value={progress} className="w-[100%]" />
+    return (
+      <div className="flex-1 flex items-center justify-center flex-col">
+        <p className="text-muted-foreground">Fetching {codeOrFunctionsOrInstructions}</p>
+        <Progress value={progress} className="w-[100%]"></Progress>
+      </div>
+    )
   }
 
   if (object) {
@@ -99,10 +108,17 @@ export function InteractiveExerciseGenerator({
               </p>
               <Button
                 variant="outline"
-                onClick={() => onStartSampleExercise(object as InteractiveApp)}
+                onClick={() => {
+                  setExerciseStarting(true)
+                  setProgress(0)
+                  onStartSampleExercise(object as InteractiveApp)
+                }}
               >
                 Start Interactive Exercise
               </Button>
+              {exerciseStarting ? (
+                <Progress value={Math.random() * 100} className="m-4 w-[100%]"></Progress>
+              ) : null}
             </div>
           </div>
         </CardContent>
@@ -116,7 +132,7 @@ export function InteractiveExerciseGenerator({
     "A graph, chart or small app showing the selected lesson title in an interactive way. For example sliders, input fields or buttons playing animations"
 
   return (
-    <>
+    <div className="flex-1 flex items-center justify-center flex-col">
       <Button
         variant="outline"
         onClick={() =>
@@ -128,6 +144,6 @@ export function InteractiveExerciseGenerator({
       >
         Generate Lesson
       </Button>
-    </>
+    </div>
   )
 }

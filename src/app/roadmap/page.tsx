@@ -136,7 +136,7 @@ export default function RoadmapPage() {
   // If we have roadmap data, display it
   if (roadmapData) {
     return (
-      <div className="container py-8 max-w-6xl">
+      <div className="container py-8 max-w-screen">
         <RoadmapDisplay roadmap={roadmapData} />
         <div className="mt-8 flex justify-center"></div>
       </div>
