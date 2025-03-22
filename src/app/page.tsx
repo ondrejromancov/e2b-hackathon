@@ -8,7 +8,7 @@ export default function Home() {
     <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
       <Card className="w-full max-w-lg">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl md:text-3xl capitalize">The Learning Platform</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl capitalize">The Learning Company</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col items-center">
           <Image
