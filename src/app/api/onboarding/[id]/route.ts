@@ -1,4 +1,4 @@
-import { onboardings } from "../route"
+import { onboardings } from "@/lib/datastore"
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

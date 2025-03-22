@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import RoadmapDisplay from "@/components/roadmap/roadmap-display"
 import { OnboardingFormData } from "@/lib/types"
 import { useRoadmap } from "@/context/roadmap-context"
 
-export default function RoadmapPage() {
+function RoadmapContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
@@ -137,5 +137,22 @@ export default function RoadmapPage() {
         </CardContent>
       </Card>
     </div>
+  )
+}
+
+export default function RoadmapPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+          <div className="flex flex-col items-center justify-center min-h-[80vh]">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+            <p className="text-lg text-muted-foreground">Loading roadmap...</p>
+          </div>
+        </div>
+      }
+    >
+      <RoadmapContent />
+    </Suspense>
   )
 }

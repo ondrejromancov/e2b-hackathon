@@ -1,4 +1,4 @@
-export const onboardings = new Map()
+import { onboardings } from "@/lib/datastore"
 
 export async function POST(req: Request) {
   const data = await req.json()
