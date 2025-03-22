@@ -1,7 +1,3 @@
-#!/bin/bash
-export NEXT_PUBLIC_POSTHOG_KEY=""
-export NEXT_PUBLIC_POSTHOG_HOST=""
-
 # This script runs during building the sandbox template
 # and makes sure the Next.js app is (1) running and (2) the `/` page is compiled
 function ping_server() {

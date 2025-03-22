@@ -15,7 +15,9 @@ export async function POST(req: Request) {
   console.log("userID", userID)
   console.log("apiKey", apiKey)
 
-  if (!interactiveApp.template) {
+  const interactiveTemplate = interactiveApp.template ?? "nextjs-developer"
+
+  if (!interactiveTemplate) {
     return new Response(
       JSON.stringify({
         error: "Template is required",
@@ -27,8 +29,8 @@ export async function POST(req: Request) {
   }
 
   // Create a interpreter or a sandbox
-  const sbx = await Sandbox.create(interactiveApp.template, {
-    metadata: { template: interactiveApp.template, userID: userID },
+  const sbx = await Sandbox.create(interactiveTemplate, {
+    metadata: { template: interactiveTemplate, userID: userID },
     timeoutMs: sandboxTimeout,
     apiKey,
   })
@@ -49,10 +51,12 @@ export async function POST(req: Request) {
 
   // Copy code to fs
   if (interactiveApp.code && Array.isArray(interactiveApp.code)) {
-    interactiveApp.code.forEach(async file => {
-      await sbx.files.write(file.file_path, file.file_content)
-      console.log(`Copied file to ${file.file_path} in ${sbx.sandboxId}`)
-    })
+    await Promise.all(
+      interactiveApp.code.map(async file => {
+        await sbx.files.write(file.file_path, file.file_content)
+        console.log(`Copied file to ${file.file_path} in ${sbx.sandboxId}`)
+      })
+    )
   }
   console.log("code copied")
 
