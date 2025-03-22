@@ -16,11 +16,28 @@ export default function RoadmapPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // Check if we already have saved roadmaps
+    const savedRoadmapsString = localStorage.getItem('savedRoadmaps')
+    const savedRoadmaps = savedRoadmapsString ? JSON.parse(savedRoadmapsString) : []
+    
+    // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
+    if (savedRoadmaps.length > 0 && !searchParams.has('subject')) {
+      setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
+      setIsLoading(false)
+      return
+    }
+    
     const subject = searchParams.get("subject")
     const level = searchParams.get("level")
     const ageGroup = searchParams.get("ageGroup")
 
     if (!subject || !level || !ageGroup) {
+      // If no parameters and no saved roadmaps, redirect to onboarding
+      if (savedRoadmaps.length === 0) {
+        router.push("/onboarding")
+        return
+      }
+      
       setError("Missing required parameters. Please complete the onboarding process.")
       setIsLoading(false)
       return
@@ -42,8 +59,20 @@ export default function RoadmapPage() {
         }
 
         const data = await response.json()
-        setRoadmapData(data.roadmap)
-
+        const newRoadmap = data.roadmap;
+        setRoadmapData(newRoadmap);
+        
+        // Check if this roadmap already exists in saved roadmaps
+        const roadmapExists = savedRoadmaps.some(
+          (roadmap: any) => roadmap.courseName === newRoadmap.courseName
+        );
+        
+        if (!roadmapExists) {
+          // Add the new roadmap to saved roadmaps
+          const updatedRoadmaps = [...savedRoadmaps, newRoadmap];
+          localStorage.setItem('savedRoadmaps', JSON.stringify(updatedRoadmaps));
+        }
+        
         // Store the roadmap data in localStorage for future use
         localStorage.setItem("roadmapData", JSON.stringify(data.roadmap))
       } catch (err) {
@@ -55,7 +84,7 @@ export default function RoadmapPage() {
     }
 
     generateRoadmap()
-  }, [searchParams])
+  }, [searchParams, router])
 
   const handleStartLearning = () => {
     router.push("/learn")
@@ -64,24 +93,15 @@ export default function RoadmapPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
-        <Card className="w-full max-w-4xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl md:text-3xl">Generating Your Learning Roadmap</CardTitle>
-            <CardDescription className="text-muted-foreground">
-              Please wait while we create a personalized learning plan for you
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center justify-center p-12">
-            <Loader2 className="h-16 w-16 animate-spin text-primary" />
-            <p className="mt-4 text-center text-muted-foreground">
-              This may take a moment as we craft the perfect learning journey for you...
-            </p>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center justify-center min-h-[80vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+          <p className="text-lg text-muted-foreground">Generating your personalized learning roadmap...</p>
+        </div>
       </div>
     )
   }
 
+  // If there was an error, show an error message
   if (error) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
@@ -98,24 +118,32 @@ export default function RoadmapPage() {
     )
   }
 
+  // If we have roadmap data, display it
+  if (roadmapData) {
+    return (
+      <div className="container py-8 max-w-6xl">
+        <RoadmapDisplay roadmap={roadmapData} />
+        <div className="mt-8 flex justify-center">
+          <Button size="lg" onClick={handleStartLearning}>
+            Start Learning Journey
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  // Fallback - should not reach here
   return (
     <div className="flex min-h-screen flex-col p-4 md:p-8">
-      <Card className="w-full max-w-6xl mx-auto">
+      <Card className="w-full max-w-4xl mx-auto">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl md:text-3xl">Your Learning Roadmap</CardTitle>
+          <CardTitle className="text-2xl md:text-3xl">Something went wrong</CardTitle>
           <CardDescription className="text-muted-foreground">
-            Here&apos;s your personalized learning journey based on your preferences
+            Unable to display your roadmap. Please try again.
           </CardDescription>
         </CardHeader>
-        <Separator />
-        <CardContent className="p-6">
-          {roadmapData && <RoadmapDisplay roadmap={roadmapData} />}
-
-          <div className="mt-8 flex justify-center">
-            <Button size="lg" onClick={handleStartLearning}>
-              Start Learning Journey
-            </Button>
-          </div>
+        <CardContent className="flex flex-col items-center justify-center p-8">
+          <Button onClick={() => router.push("/onboarding")}>Go to Onboarding</Button>
         </CardContent>
       </Card>
     </div>
