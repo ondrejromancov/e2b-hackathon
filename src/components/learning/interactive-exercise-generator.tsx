@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { useSearchParams } from "next/navigation"
 import { useRoadmap } from "@/context/roadmap-context"
+import { useEffect, useState } from "react"
+import { Progress } from "../ui/progress"
 
 interface InteractiveExerciseGeneratorProps {
   onExerciseGenerated: (preview: {
@@ -64,8 +66,20 @@ export function InteractiveExerciseGenerator({
     onExerciseGenerated({ interactiveApp: object, result: undefined })
   }
 
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    if (isLoading && progress < 100) {
+      const interval = setInterval(() => {
+        setProgress(prevProgress => Math.min(prevProgress + 1, 100))
+      }, 250)
+
+      return () => clearInterval(interval)
+    }
+  }, [isLoading, progress])
+
   if (isLoading) {
-    return <>Loading..</>
+    return <Progress value={progress} className="w-[100%]" />
   }
 
   if (object) {
