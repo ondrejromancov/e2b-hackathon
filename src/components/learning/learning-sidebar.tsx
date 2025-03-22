@@ -1,58 +1,68 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle, CircleDashed } from "lucide-react";
 
-// Mock data for learning roadmap
-// In a real application, this would come from an API
-const roadmapData = {
+// Default roadmap data in case nothing is in localStorage
+const defaultRoadmapData = {
   courseName: "Introduction to Computer Science",
-  progress: 35,
+  progress: 0,
   modules: [
     {
       id: 1,
       title: "Getting Started with Programming",
-      completed: true,
-      lessons: [
-        { id: 1, title: "Introduction to Computing", completed: true },
-        { id: 2, title: "Setting Up Your Environment", completed: true },
-        { id: 3, title: "Your First Program", completed: true },
-      ],
-    },
-    {
-      id: 2,
-      title: "Basic Programming Concepts",
       completed: false,
       lessons: [
-        { id: 4, title: "Variables and Data Types", completed: true },
-        { id: 5, title: "Control Structures", completed: false },
-        { id: 6, title: "Functions and Methods", completed: false },
-      ],
-    },
-    {
-      id: 3,
-      title: "Data Structures",
-      completed: false,
-      lessons: [
-        { id: 7, title: "Arrays and Lists", completed: false },
-        { id: 8, title: "Dictionaries and Maps", completed: false },
-        { id: 9, title: "Objects and Classes", completed: false },
-      ],
-    },
-    {
-      id: 4,
-      title: "Advanced Topics",
-      completed: false,
-      lessons: [
-        { id: 10, title: "Algorithms", completed: false },
-        { id: 11, title: "Software Design Principles", completed: false },
-        { id: 12, title: "Final Project", completed: false },
+        { id: 1, title: "Introduction to Computing", completed: false },
+        { id: 2, title: "Setting Up Your Environment", completed: false },
+        { id: 3, title: "Your First Program", completed: false },
       ],
     },
   ],
 };
 
 export default function LearningSidebar() {
+  const [roadmapData, setRoadmapData] = useState(defaultRoadmapData);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // Retrieve roadmap data from localStorage
+    const storedRoadmap = localStorage.getItem("roadmapData");
+    if (storedRoadmap) {
+      try {
+        const parsedRoadmap = JSON.parse(storedRoadmap);
+        
+        // Add completed property to modules and lessons if not present
+        const processedRoadmap = {
+          ...parsedRoadmap,
+          modules: parsedRoadmap.modules.map((module: any) => ({
+            ...module,
+            completed: false,
+            lessons: module.lessons.map((lesson: any) => ({
+              ...lesson,
+              completed: false,
+            })),
+          })),
+        };
+        
+        setRoadmapData(processedRoadmap);
+        
+        // Calculate progress (all lessons start as not completed)
+        setProgress(0);
+      } catch (error) {
+        console.error("Error parsing roadmap data:", error);
+      }
+    }
+  }, []);
+
+  const handleGenerateNewLessons = () => {
+    // This would typically trigger a new API call to generate more content
+    alert("This feature would generate new lessons based on your progress and interests.");
+  };
+
   return (
     <div className="flex flex-col h-full overflow-auto">
       <div className="p-4">
@@ -60,9 +70,9 @@ export default function LearningSidebar() {
         <div className="mt-2 space-y-1">
           <div className="flex justify-between text-sm">
             <span>Overall Progress</span>
-            <span>{roadmapData.progress}%</span>
+            <span>{progress}%</span>
           </div>
-          <Progress value={roadmapData.progress} className="h-2" />
+          <Progress value={progress} className="h-2" />
         </div>
       </div>
 
@@ -105,7 +115,7 @@ export default function LearningSidebar() {
       </div>
 
       <div className="p-4 mt-auto border-t">
-        <Button variant="outline" className="w-full">
+        <Button variant="outline" className="w-full" onClick={handleGenerateNewLessons}>
           Generate New Lessons
         </Button>
       </div>
