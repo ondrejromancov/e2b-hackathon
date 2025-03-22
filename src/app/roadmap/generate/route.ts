@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import OpenAI from "openai"
+import { v4 as uuidv4 } from "uuid"
 
 // Initialize OpenAI client
 const openai = new OpenAI({
@@ -15,6 +16,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
+    // Create a unique ID for this roadmap
+    const roadmapId = uuidv4()
+
     // Create a prompt for OpenAI to generate a structured roadmap
     const prompt = `
       Create a detailed learning roadmap for ${subject} at a ${level} level for ${activityDuration}.
@@ -29,7 +33,13 @@ export async function POST(request: NextRequest) {
 
       Format the response as a JSON object with the following structure:
       {
+        "id": "${roadmapId}",
         "courseName": "Title of the Course",
+        "subject": "${subject}",
+        "level": "${level}",
+        "ageGroup": "${ageGroup}",
+        ${learningMethod ? `"learningMethod": "${learningMethod}",` : ''}
+        ${interests ? `"interests": "${interests}",` : ''}
         "modules": [
           {
             "id": 1,
@@ -81,6 +91,11 @@ export async function POST(request: NextRequest) {
     // Extract and parse the response
     const responseContent = completion.choices[0].message.content
     const roadmapData = JSON.parse(responseContent || "{}")
+    
+    // Ensure the ID is included in the response
+    if (!roadmapData.id) {
+      roadmapData.id = roadmapId
+    }
 
     // Return the generated roadmap
     return NextResponse.json({ roadmap: roadmapData })
