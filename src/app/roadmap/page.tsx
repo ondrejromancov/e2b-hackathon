@@ -63,6 +63,7 @@ export default function RoadmapPage() {
         setRoadmapData(newRoadmap)
 
         // Check if this roadmap already exists in saved roadmaps by ID
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const roadmapExists = savedRoadmaps.some((roadmap: any) => roadmap.id === newRoadmap.id)
 
         if (!roadmapExists) {

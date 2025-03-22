@@ -201,9 +201,6 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
             {/* Render all roadmaps side by side */}
             {roadmaps.map((roadmapData, roadmapIndex) => {
               const nodePositions = calculateNodePositions(roadmapIndex, roadmapData)
-              const containerWidth = dimensions.width
-              const roadmapWidth = containerWidth / roadmaps.length
-              const titleX = roadmapWidth * roadmapIndex + roadmapWidth / 2
 
               return (
                 <div key={`roadmap-${roadmapIndex}`} className="absolute inset-0">
