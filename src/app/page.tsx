@@ -7,7 +7,9 @@ export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
       <Card className="w-full max-w-lg">
-        <CardHeader className="text-center"></CardHeader>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl md:text-3xl capitalize">The Learning Platform</CardTitle>
+        </CardHeader>
         <CardContent className="flex flex-col items-center">
           <Image
             src="/logo.svg"
@@ -17,7 +19,9 @@ export default function Home() {
             alt="The Learning Platform Logo"
           />
           <Link href="/onboarding">
-            <Button size="lg">Get Started</Button>
+            <Button size="lg" className="w-full">
+              Enter
+            </Button>
           </Link>
         </CardContent>
       </Card>
