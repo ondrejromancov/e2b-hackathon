@@ -4,8 +4,9 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
+import Image from "next/image"
 
 export default function OnboardingForm() {
   const router = useRouter()
@@ -13,7 +14,7 @@ export default function OnboardingForm() {
   const [formData, setFormData] = useState({
     subject: "",
     level: "",
-    ageGroup: "",
+    activityType: "",
   })
 
   const handleNext = () => {
@@ -51,77 +52,31 @@ export default function OnboardingForm() {
         <form onSubmit={handleSubmit}>
           {step === 1 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">What subject would you like to learn?</h3>
+              <h3 className="text-lg font-medium text-center">What are you curious about?</h3>
               <Tabs defaultValue="stem" className="w-full">
                 <TabsContent value="stem" className="pt-4">
                   <div className="grid grid-cols-2 gap-4">
                     {["Mathematics", "Physics", "Biology", "Engineering"].map(subject => (
-                      <Button
-                        key={subject}
-                        type="button"
-                        variant={formData.subject === subject ? "default" : "outline"}
-                        className="h-24 flex flex-col items-center justify-center"
-                        onClick={() => updateFormData("subject", subject)}
-                      >
-                        {subject}
-                      </Button>
+                      <Card key={subject} onClick={() => updateFormData("subject", subject)}>
+                        <CardContent className="flex items-center justify-center flex-col">
+                          <Image
+                            src={`/${subject.toLowerCase()}.svg`}
+                            width={200}
+                            height={200}
+                            className="mb-4"
+                            alt="The Learning Platform Logo"
+                          />
+                          <Button
+                            key={subject}
+                            type="button"
+                            variant={formData.subject === subject ? "default" : "outline"}
+                            className="h-12 w-2/3 flex flex-col items-center justify-center"
+                          >
+                            {subject}
+                          </Button>
+                        </CardContent>
+                      </Card>
                     ))}
-                  </div>
-                </TabsContent>
-                <TabsContent value="humanities" className="pt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    {[
-                      "History",
-                      "Geography",
-                      "Philosophy",
-                      "Psychology",
-                      "Sociology",
-                      "Economics",
-                    ].map(subject => (
-                      <Button
-                        key={subject}
-                        type="button"
-                        variant={formData.subject === subject ? "default" : "outline"}
-                        className="h-24 flex flex-col items-center justify-center"
-                        onClick={() => updateFormData("subject", subject)}
-                      >
-                        {subject}
-                      </Button>
-                    ))}
-                  </div>
-                </TabsContent>
-                <TabsContent value="languages" className="pt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    {["English", "Spanish", "French", "German", "Chinese", "Japanese"].map(
-                      subject => (
-                        <Button
-                          key={subject}
-                          type="button"
-                          variant={formData.subject === subject ? "default" : "outline"}
-                          className="h-24 flex flex-col items-center justify-center"
-                          onClick={() => updateFormData("subject", subject)}
-                        >
-                          {subject}
-                        </Button>
-                      )
-                    )}
-                  </div>
-                </TabsContent>
-                <TabsContent value="arts" className="pt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    {["Music", "Visual Arts", "Theater", "Dance", "Creative Writing", "Film"].map(
-                      subject => (
-                        <Button
-                          key={subject}
-                          type="button"
-                          variant={formData.subject === subject ? "default" : "outline"}
-                          className="h-24 flex flex-col items-center justify-center"
-                          onClick={() => updateFormData("subject", subject)}
-                        >
-                          {subject}
-                        </Button>
-                      )
-                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -130,7 +85,7 @@ export default function OnboardingForm() {
 
           {step === 2 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">What is your proficiency level?</h3>
+              <h3 className="text-lg font-medium text-center">What is your proficiency level?</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {["Beginner", "Intermediate", "Advanced"].map(level => (
                   <Button
@@ -149,22 +104,20 @@ export default function OnboardingForm() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">What is your age group?</h3>
+              <h3 className="text-lg font-medium text-center">I am going to</h3>
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  "Elementary School (6-10)",
-                  "Middle School (11-13)",
-                  "High School (14-18)",
-                  "College/University",
-                  "Adult Learner",
-                  "Professional Development",
+                  "2 minutes activity",
+                  "30 minute lesson",
+                  "90 minute exam",
+                  "Compete against opponent",
                 ].map(age => (
                   <Button
                     key={age}
                     type="button"
-                    variant={formData.ageGroup === age ? "default" : "outline"}
+                    variant={formData.activityType === age ? "default" : "outline"}
                     className="h-24 flex flex-col items-center justify-center text-center"
-                    onClick={() => updateFormData("ageGroup", age)}
+                    onClick={() => updateFormData("activityType", age)}
                   >
                     {age}
                   </Button>
@@ -191,7 +144,7 @@ export default function OnboardingForm() {
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={!formData.ageGroup}>
+              <Button type="submit" disabled={!formData.activityType}>
                 Start Learning
               </Button>
             )}
