@@ -7,14 +7,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function OnboardingForm() {
   const router = useRouter()
   const [step, setStep] = useState(1)
-  const [formData, setFormData] = useState({
+  interface FormData {
+    subject: string
+    level: string
+    learningMethod: string
+    activityDuration: string
+    interests: string
+  }
+
+  const [formData, setFormData] = useState<FormData>({
     subject: "",
     level: "",
-    activityType: "",
+    learningMethod: "",
+    activityDuration: "",
+    interests: "",
   })
 
   const handleNext = () => {
@@ -34,7 +45,9 @@ export default function OnboardingForm() {
     router.push(
       `/roadmap?subject=${encodeURIComponent(formData.subject)}&level=${encodeURIComponent(
         formData.level
-      )}&ageGroup=${encodeURIComponent(formData.activityType)}`
+      )}&ageGroup=${encodeURIComponent(formData.activityDuration)}&interests=${encodeURIComponent(
+        formData.interests
+      )}&learningMethod=${encodeURIComponent(formData.learningMethod)}`
     )
   }
 
@@ -103,29 +116,57 @@ export default function OnboardingForm() {
                   </Button>
                 ))}
               </div>
+              <h3 className="text-lg font-medium text-center">
+                What is your preferred learning method?
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {["Visual", "Game-like", "Quiz"].map(level => (
+                  <Button
+                    key={level}
+                    type="button"
+                    variant={formData.learningMethod === level ? "default" : "outline"}
+                    className="h-24 flex flex-col items-center justify-center"
+                    onClick={() => updateFormData("learningMethod", level)}
+                  >
+                    {level}
+                  </Button>
+                ))}
+              </div>
+              <h3 className="text-lg font-medium text-center">Activity duration?</h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {["5 min quick session", "45 minutes lesson", "Compete against opponent"].map(
+                  activityDuration => (
+                    <Button
+                      key={activityDuration}
+                      type="button"
+                      variant={
+                        formData.activityDuration === activityDuration ? "default" : "outline"
+                      }
+                      className="h-24 flex flex-col items-center justify-center text-center"
+                      onClick={() => updateFormData("activityDuration", activityDuration)}
+                    >
+                      {activityDuration}
+                    </Button>
+                  )
+                )}
+              </div>
             </div>
           )}
 
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-center">How much time do you have?</h3>
+              <h3 className="text-lg font-medium text-center">
+                What do you like during your learning?
+              </h3>
               <div className="grid grid-cols-2 gap-4">
-                {[
-                  "2 minutes activity",
-                  "30 minute lesson",
-                  "90 minute exam",
-                  "Compete against opponent",
-                ].map(activityType => (
-                  <Button
-                    key={activityType}
-                    type="button"
-                    variant={formData.activityType === activityType ? "default" : "outline"}
-                    className="h-24 flex flex-col items-center justify-center text-center"
-                    onClick={() => updateFormData("activityType", activityType)}
-                  >
-                    {activityType}
-                  </Button>
-                ))}
+                <Textarea
+                  className="col-span-2"
+                  value={formData.interests}
+                  onChange={e => updateFormData("interests", e.target.value)}
+                  placeholder="I like rainbows 🌈 and unicorns 🦄"
+                />
               </div>
             </div>
           )}
@@ -148,7 +189,15 @@ export default function OnboardingForm() {
                 Next
               </Button>
             ) : (
-              <Button type="submit" disabled={!formData.activityType}>
+              <Button
+                type="submit"
+                disabled={
+                  !formData.activityDuration ||
+                  !formData.interests ||
+                  !formData.learningMethod ||
+                  !formData.subject
+                }
+              >
                 Start Learning
               </Button>
             )}
