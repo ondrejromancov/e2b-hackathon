@@ -9,7 +9,7 @@ import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
 import { Textarea } from "@/components/ui/textarea"
 
-interface OnboardingFormData {
+export interface OnboardingFormData {
   subject: string
   level: string
   learningMethod: string
@@ -37,19 +37,24 @@ export default function OnboardingForm() {
     setStep(prev => Math.max(prev - 1, 1))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // In a real app, we'd save this data to a database or local storage
-    console.log("Submitted form data:", formData)
 
-    // Navigate to the roadmap generation page with query parameters
-    router.push(
-      `/roadmap?subject=${encodeURIComponent(formData.subject)}&level=${encodeURIComponent(
-        formData.level
-      )}&ageGroup=${encodeURIComponent(formData.activityDuration)}&interests=${encodeURIComponent(
-        formData.interests
-      )}&learningMethod=${encodeURIComponent(formData.learningMethod)}`
-    )
+    // Post formData to /api/onboarding
+    const res = await fetch("/api/onboarding", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+
+    if (!res.ok) {
+      throw new Error("Failed to generate roadmap")
+    }
+
+    const data = await res.json()
+    router.push(`/roadmap?id=${data.id}`)
   }
 
   const updateFormData = (field: string, value: string) => {

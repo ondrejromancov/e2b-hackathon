@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import RoadmapDisplay from "@/components/roadmap/roadmap-display"
+import type { OnboardingFormData } from "@/components/onboarding/onboarding-form"
 
 export default function RoadmapPage() {
   const router = useRouter()
@@ -17,43 +17,40 @@ export default function RoadmapPage() {
 
   useEffect(() => {
     // Check if we already have saved roadmaps
-    const savedRoadmapsString = localStorage.getItem('savedRoadmaps')
+    const savedRoadmapsString = localStorage.getItem("savedRoadmaps")
     const savedRoadmaps = savedRoadmapsString ? JSON.parse(savedRoadmapsString) : []
-    
-    // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
-    if (savedRoadmaps.length > 0 && !searchParams.has('subject')) {
-      setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
-      setIsLoading(false)
-      return
-    }
-    
-    const subject = searchParams.get("subject")
-    const level = searchParams.get("level")
-    const ageGroup = searchParams.get("ageGroup")
-    const learningMethod = searchParams.get("learningMethod")
-    const interests = searchParams.get("interests")
 
-    if (!subject || !level || !ageGroup) {
-      // If no parameters and no saved roadmaps, redirect to onboarding
-      if (savedRoadmaps.length === 0) {
-        router.push("/onboarding")
-        return
-      }
-      
-      setError("Missing required parameters. Please complete the onboarding process.")
+    // If we have saved roadmaps and no specific parameters, just show the saved roadmaps
+    if (savedRoadmaps.length > 0 && !searchParams.has("subject")) {
+      setRoadmapData(savedRoadmaps[0]) // Use the first roadmap as the primary one
       setIsLoading(false)
       return
     }
 
     // Generate roadmap using the API
-    const generateRoadmap = async () => {
+    const generateRoadmap = async (id: string) => {
       try {
+        const onboardingResponse = await fetch(`/api/onboarding/${id}`)
+
+        if (!onboardingResponse.ok) {
+          throw new Error("Failed to generate roadmap")
+        }
+
+        const { subject, level, activityDuration, learningMethod, interests } =
+          (await onboardingResponse.json()) as OnboardingFormData
+
         const response = await fetch("/api/roadmap/generate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ subject, level, ageGroup, learningMethod, interests }),
+          body: JSON.stringify({
+            subject,
+            level,
+            ageGroup: activityDuration,
+            learningMethod,
+            interests,
+          }),
         })
 
         if (!response.ok) {
@@ -61,20 +58,20 @@ export default function RoadmapPage() {
         }
 
         const data = await response.json()
-        const newRoadmap = data.roadmap;
-        setRoadmapData(newRoadmap);
-        
+        const newRoadmap = data.roadmap
+        setRoadmapData(newRoadmap)
+
         // Check if this roadmap already exists in saved roadmaps
         const roadmapExists = savedRoadmaps.some(
           (roadmap: any) => roadmap.courseName === newRoadmap.courseName
-        );
-        
+        )
+
         if (!roadmapExists) {
           // Add the new roadmap to saved roadmaps
-          const updatedRoadmaps = [...savedRoadmaps, newRoadmap];
-          localStorage.setItem('savedRoadmaps', JSON.stringify(updatedRoadmaps));
+          const updatedRoadmaps = [...savedRoadmaps, newRoadmap]
+          localStorage.setItem("savedRoadmaps", JSON.stringify(updatedRoadmaps))
         }
-        
+
         // Store the roadmap data in localStorage for future use
         localStorage.setItem("roadmapData", JSON.stringify(data.roadmap))
       } catch (err) {
@@ -85,7 +82,7 @@ export default function RoadmapPage() {
       }
     }
 
-    generateRoadmap()
+    generateRoadmap(searchParams.get("id") ?? "")
   }, [searchParams, router])
 
   const handleStartLearning = () => {
@@ -97,7 +94,9 @@ export default function RoadmapPage() {
       <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
         <div className="flex flex-col items-center justify-center min-h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-          <p className="text-lg text-muted-foreground">Generating your personalized learning roadmap...</p>
+          <p className="text-lg text-muted-foreground">
+            Generating your personalized learning roadmap...
+          </p>
         </div>
       </div>
     )
