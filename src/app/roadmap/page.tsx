@@ -30,6 +30,8 @@ export default function RoadmapPage() {
     const subject = searchParams.get("subject")
     const level = searchParams.get("level")
     const ageGroup = searchParams.get("ageGroup")
+    const learningMethod = searchParams.get("learningMethod")
+    const interests = searchParams.get("interests")
 
     if (!subject || !level || !ageGroup) {
       // If no parameters and no saved roadmaps, redirect to onboarding
@@ -51,7 +53,7 @@ export default function RoadmapPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ subject, level, ageGroup }),
+          body: JSON.stringify({ subject, level, ageGroup, learningMethod, interests }),
         })
 
         if (!response.ok) {

@@ -26,6 +26,8 @@ interface RoadmapProps {
   roadmap: {
     courseName: string
     modules: Module[]
+    learningMethod?: string
+    interests?: string
   }
 }
 
@@ -36,7 +38,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = useState({ width: window.innerWidth, height: window.innerHeight });
-  const [roadmaps, setRoadmaps] = useState<{courseName: string; modules: Module[]}[]>([]);
+  const [roadmaps, setRoadmaps] = useState<{courseName: string; modules: Module[]; learningMethod?: string; interests?: string}[]>([]);
 
   // Load saved roadmaps from localStorage on initial render
   useEffect(() => {
@@ -105,7 +107,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   }, []);
 
   // Function to calculate node positions in a linear vertical layout with lessons
-  const calculateNodePositions = (roadmapIndex: number, roadmapData: {courseName: string; modules: Module[]}) => {
+  const calculateNodePositions = (roadmapIndex: number, roadmapData: {courseName: string; modules: Module[]; learningMethod?: string; interests?: string}) => {
     const containerWidth = dimensions.width;
     const roadmapWidth = containerWidth / roadmaps.length;
     const centerX = (roadmapWidth * roadmapIndex) + (roadmapWidth / 2);
@@ -175,7 +177,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   };
   
   // Function to add a new roadmap after onboarding
-  const addNewRoadmap = (newRoadmap: {courseName: string; modules: Module[]}) => {
+  const addNewRoadmap = (newRoadmap: {courseName: string; modules: Module[]; learningMethod?: string; interests?: string}) => {
     // Add the new roadmap to the existing roadmaps
     const updatedRoadmaps = [...roadmaps, newRoadmap];
     setRoadmaps(updatedRoadmaps);
