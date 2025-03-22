@@ -1,4 +1,7 @@
 import { z } from "zod";
+import { TEMPLATES_IDS } from "./types";
+
+const TemplateIds = z.enum(TEMPLATES_IDS);
 
 export const interactiveAppSchema = z.object({
   commentary: z
@@ -6,8 +9,7 @@ export const interactiveAppSchema = z.object({
     .describe(
       `Describe what you're about to do and the steps you want to take for generating the interactive app in great detail.`
     ),
-  template: z
-    .string()
+  template: TemplateIds
     .describe("Name of the template used to generate the interactive app"),
   // template_ready: z.boolean().describe('Detect if finished identifying the template.'),
   title: z

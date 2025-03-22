@@ -1,7 +1,6 @@
 import { ExecutionError, Result } from "@e2b/code-interpreter";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const TEMPLATES_IDS = ["code-interpreter-v1"] as const;
+export const TEMPLATES_IDS = ["nextjs-developer"] as const;
 type TemplateIds = (typeof TEMPLATES_IDS)[number];
 
 type ExecutionResultBase = {
