@@ -157,12 +157,22 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   const handleModuleSelect = (module: Module) => {
     setSelectedModule(module === selectedModule ? null : module);
     setSelectedLesson(null);
+    
+    // Navigate to the learn page with module information
+    if (module !== selectedModule) {
+      router.push(`/learn?type=module&id=${module.id}&title=${encodeURIComponent(module.title)}`);
+    }
   };
   
   // Function to handle lesson selection
   const handleLessonSelect = (lesson: Lesson) => {
     setSelectedLesson(lesson === selectedLesson ? null : lesson);
     setSelectedModule(null);
+    
+    // Navigate to the learn page with lesson information
+    if (lesson !== selectedLesson) {
+      router.push(`/learn?type=lesson&id=${lesson.id}&title=${encodeURIComponent(lesson.title)}`);
+    }
   };
   
   // Function to close the details panel
