@@ -8,14 +8,7 @@ import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
 import { Textarea } from "@/components/ui/textarea"
-
-export interface OnboardingFormData {
-  subject: string
-  level: string
-  learningMethod: string
-  activityDuration: string
-  interests: string
-}
+import { OnboardingFormData } from "@/lib/types"
 
 export default function OnboardingForm() {
   const router = useRouter()
@@ -207,7 +200,5 @@ export default function OnboardingForm() {
 }
 
 function canSubmit(formData: OnboardingFormData) {
-  return (
-    formData.activityDuration && formData.interests && formData.learningMethod && formData.subject
-  )
+  return formData.activityDuration && formData.learningMethod && formData.subject
 }

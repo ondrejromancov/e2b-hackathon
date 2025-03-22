@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react"
 import RoadmapDisplay from "@/components/roadmap/roadmap-display"
-import type { OnboardingFormData } from "@/components/onboarding/onboarding-form"
+import { OnboardingFormData } from "@/lib/types"
 
 export default function RoadmapPage() {
   const router = useRouter()

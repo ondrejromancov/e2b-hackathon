@@ -26,3 +26,11 @@ export type LessonInput = {
   title: string
   description: string
 }
+
+export interface OnboardingFormData {
+  subject: string
+  level: string
+  learningMethod: string
+  activityDuration: string
+  interests: string
+}

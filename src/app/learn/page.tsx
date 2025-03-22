@@ -1,7 +1,6 @@
 import { Suspense } from "react"
 import LearningInterface from "@/components/learning/learning-interface"
 import { Separator } from "@/components/ui/separator"
-import LearningSidebar from "@/components/learning/learning-sidebar"
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
