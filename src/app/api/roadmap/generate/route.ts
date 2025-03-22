@@ -8,16 +8,16 @@ const openai = new OpenAI({
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, level, ageGroup } = await request.json()
+    const { subject, level, activityDuration } = await request.json()
 
     // Validate required fields
-    if (!subject || !level || !ageGroup) {
+    if (!subject || !level || !activityDuration) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
     // Create a prompt for OpenAI to generate a structured roadmap
     const prompt = `
-      Create a detailed learning roadmap for ${subject} at a ${level} level for ${ageGroup}.
+      Create a detailed learning roadmap for ${subject} at a ${level} level for ${activityDuration}.
 
       The roadmap should include:
       1. A course title

@@ -47,7 +47,7 @@ export default function RoadmapPage() {
           body: JSON.stringify({
             subject,
             level,
-            ageGroup: activityDuration,
+            activityDuration: activityDuration,
             learningMethod,
             interests,
           }),
