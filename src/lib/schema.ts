@@ -45,4 +45,4 @@ export const interactiveAppSchema = z.object({
   error: z.string().optional().describe("Error message if the fragment is not valid."),
 })
 
-export type InteractiveAppSchema = z.infer<typeof interactiveAppSchema>
+export type InteractiveApp = z.infer<typeof interactiveAppSchema>

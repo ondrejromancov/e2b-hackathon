@@ -1,23 +1,28 @@
-import { ExecutionError, Result } from "@e2b/code-interpreter";
+import { ExecutionError, Result } from "@e2b/code-interpreter"
 
-export const TEMPLATES_IDS = ["nextjs-developer"] as const;
-type TemplateIds = (typeof TEMPLATES_IDS)[number];
+export const TEMPLATES_IDS = ["nextjs-developer"] as const
+type TemplateIds = (typeof TEMPLATES_IDS)[number]
 
 type ExecutionResultBase = {
-  sbxId: string;
-};
+  sbxId: string
+}
 
 export type ExecutionResultInterpreter = ExecutionResultBase & {
-  template?: TemplateIds;
-  stdout: string[];
-  stderr: string[];
-  runtimeError?: ExecutionError;
-  cellResults: Result[];
-};
+  template?: TemplateIds
+  stdout: string[]
+  stderr: string[]
+  runtimeError?: ExecutionError
+  cellResults: Result[]
+}
 
 export type ExecutionResultWeb = ExecutionResultBase & {
-  template?: TemplateIds;
-  url: string;
-};
+  template?: TemplateIds
+  url: string
+}
 
-export type ExecutionResult = ExecutionResultInterpreter | ExecutionResultWeb;
+export type ExecutionResult = ExecutionResultInterpreter | ExecutionResultWeb
+
+export type LessonInput = {
+  title: string
+  description: string
+}

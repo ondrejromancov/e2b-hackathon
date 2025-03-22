@@ -1,4 +1,4 @@
-import { InteractiveAppSchema } from "@/lib/schema"
+import { InteractiveApp } from "@/lib/schema"
 import { ExecutionResultWeb } from "@/lib/types"
 import { Sandbox } from "@e2b/code-interpreter"
 
@@ -9,9 +9,9 @@ export const maxDuration = 60
 const apiKey = process.env.E2B_API_KEY
 
 export async function POST(req: Request) {
-  const { fragment: interactiveApp, userID }: { fragment: InteractiveAppSchema; userID: string } =
+  const { fragment: interactiveApp, userID }: { fragment: InteractiveApp; userID: string } =
     await req.json()
-  console.log("fragment", interactiveApp)
+  console.log("interactiveApp", interactiveApp)
   console.log("userID", userID)
   console.log("apiKey", apiKey)
 
@@ -33,6 +33,8 @@ export async function POST(req: Request) {
     apiKey,
   })
 
+  console.log("sandbox created")
+
   // Install packages
   if (interactiveApp.has_additional_dependencies) {
     await sbx.commands.run(interactiveApp.install_dependencies_command)
@@ -43,6 +45,8 @@ export async function POST(req: Request) {
     )
   }
 
+  console.log("packages installed")
+
   // Copy code to fs
   if (interactiveApp.code && Array.isArray(interactiveApp.code)) {
     interactiveApp.code.forEach(async file => {
@@ -50,6 +54,8 @@ export async function POST(req: Request) {
       console.log(`Copied file to ${file.file_path} in ${sbx.sandboxId}`)
     })
   }
+  console.log("code copied")
+
   //   else {
   //     await sbx.files.write(fragment.file_path, fragment.code)
   //     console.log(`Copied file to ${fragment.file_path} in ${sbx.sandboxId}`)
