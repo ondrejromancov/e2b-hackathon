@@ -9,18 +9,19 @@ import { Progress } from "@/components/ui/progress"
 import Image from "next/image"
 import { Textarea } from "@/components/ui/textarea"
 
+interface OnboardingFormData {
+  subject: string
+  level: string
+  learningMethod: string
+  activityDuration: string
+  interests: string
+}
+
 export default function OnboardingForm() {
   const router = useRouter()
   const [step, setStep] = useState(1)
-  interface FormData {
-    subject: string
-    level: string
-    learningMethod: string
-    activityDuration: string
-    interests: string
-  }
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<OnboardingFormData>({
     subject: "",
     level: "",
     learningMethod: "",
@@ -109,7 +110,7 @@ export default function OnboardingForm() {
                     key={level}
                     type="button"
                     variant={formData.level === level ? "default" : "outline"}
-                    className="h-24 flex flex-col items-center justify-center"
+                    className="h-12 flex flex-col items-center justify-center"
                     onClick={() => updateFormData("level", level)}
                   >
                     {level}
@@ -126,7 +127,7 @@ export default function OnboardingForm() {
                     key={level}
                     type="button"
                     variant={formData.learningMethod === level ? "default" : "outline"}
-                    className="h-24 flex flex-col items-center justify-center"
+                    className="h-12 flex flex-col items-center justify-center"
                     onClick={() => updateFormData("learningMethod", level)}
                   >
                     {level}
@@ -144,7 +145,7 @@ export default function OnboardingForm() {
                       variant={
                         formData.activityDuration === activityDuration ? "default" : "outline"
                       }
-                      className="h-24 flex flex-col items-center justify-center text-center"
+                      className="h-12 flex flex-col items-center justify-center text-center"
                       onClick={() => updateFormData("activityDuration", activityDuration)}
                     >
                       {activityDuration}
@@ -189,15 +190,7 @@ export default function OnboardingForm() {
                 Next
               </Button>
             ) : (
-              <Button
-                type="submit"
-                disabled={
-                  !formData.activityDuration ||
-                  !formData.interests ||
-                  !formData.learningMethod ||
-                  !formData.subject
-                }
-              >
+              <Button type="button" disabled={!canSubmit(formData)} onClick={handleSubmit}>
                 Start Learning
               </Button>
             )}
@@ -205,5 +198,11 @@ export default function OnboardingForm() {
         </form>
       </CardContent>
     </Card>
+  )
+}
+
+function canSubmit(formData: OnboardingFormData) {
+  return (
+    formData.activityDuration && formData.interests && formData.learningMethod && formData.subject
   )
 }
