@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
 
     // Call OpenAI API to generate the roadmap
     const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [
         {
           role: "system",
