@@ -30,8 +30,8 @@ export default function OnboardingForm() {
     // In a real app, we'd save this data to a database or local storage
     console.log("Submitted form data:", formData)
 
-    // Navigate to the learning dashboard
-    router.push("/learn")
+    // Navigate to the roadmap generation page with query parameters
+    router.push(`/roadmap?subject=${encodeURIComponent(formData.subject)}&level=${encodeURIComponent(formData.level)}&ageGroup=${encodeURIComponent(formData.ageGroup)}`)
   }
 
   const updateFormData = (field: string, value: string) => {
