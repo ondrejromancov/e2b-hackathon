@@ -9,38 +9,51 @@ export const maxDuration = 60
 const apiKey = process.env.E2B_API_KEY
 
 export async function POST(req: Request) {
-  const { fragment, userID }: { fragment: InteractiveAppSchema; userID: string } = await req.json()
-  console.log("fragment", fragment)
+  const { fragment: interactiveApp, userID }: { fragment: InteractiveAppSchema; userID: string } =
+    await req.json()
+  console.log("fragment", interactiveApp)
   console.log("userID", userID)
   console.log("apiKey", apiKey)
 
+  if (!interactiveApp.template) {
+    return new Response(
+      JSON.stringify({
+        error: "Template is required",
+      }),
+      {
+        status: 400,
+      }
+    )
+  }
+
   // Create a interpreter or a sandbox
-  const sbx = await Sandbox.create(fragment.template, {
-    metadata: { template: fragment.template, userID: userID },
+  const sbx = await Sandbox.create(interactiveApp.template, {
+    metadata: { template: interactiveApp.template, userID: userID },
     timeoutMs: sandboxTimeout,
     apiKey,
   })
 
   // Install packages
-  if (fragment.has_additional_dependencies) {
-    await sbx.commands.run(fragment.install_dependencies_command)
+  if (interactiveApp.has_additional_dependencies) {
+    await sbx.commands.run(interactiveApp.install_dependencies_command)
     console.log(
-      `Installed dependencies: ${fragment.additional_dependencies.join(", ")} in sandbox ${
+      `Installed dependencies: ${interactiveApp.additional_dependencies.join(", ")} in sandbox ${
         sbx.sandboxId
       }`
     )
   }
 
   // Copy code to fs
-  if (fragment.code && Array.isArray(fragment.code)) {
-    fragment.code.forEach(async file => {
+  if (interactiveApp.code && Array.isArray(interactiveApp.code)) {
+    interactiveApp.code.forEach(async file => {
       await sbx.files.write(file.file_path, file.file_content)
       console.log(`Copied file to ${file.file_path} in ${sbx.sandboxId}`)
     })
-  } else {
-    await sbx.files.write(fragment.file_path, fragment.code)
-    console.log(`Copied file to ${fragment.file_path} in ${sbx.sandboxId}`)
   }
+  //   else {
+  //     await sbx.files.write(fragment.file_path, fragment.code)
+  //     console.log(`Copied file to ${fragment.file_path} in ${sbx.sandboxId}`)
+  //   }
 
   // Execute code or return a URL to the running sandbox
   //   if (fragment.template === "code-interpreter-v1") {
@@ -61,8 +74,8 @@ export async function POST(req: Request) {
   return new Response(
     JSON.stringify({
       sbxId: sbx?.sandboxId,
-      template: fragment.template,
-      url: `https://${sbx?.getHost(fragment.port || 80)}`,
+      template: interactiveApp.template,
+      url: `https://${sbx?.getHost(interactiveApp.port || 80)}`,
     } as ExecutionResultWeb)
   )
 }

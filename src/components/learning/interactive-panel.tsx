@@ -20,8 +20,8 @@ const SAMPLE_APP: InteractiveAppSchema = {
   has_additional_dependencies: true,
   install_dependencies_command: "npm install chart.js react-chartjs-2",
   port: 3000,
-  file_path: "power-visualizer/App.js",
-  code: "",
+  code: [],
+  code_finished: true,
 }
 
 export function InteractivePanel() {
@@ -37,6 +37,9 @@ export function InteractivePanel() {
   }
 
   const handleStartExercise = async () => {
+
+
+
     const response = await fetch("/api/sandbox", {
       method: "POST",
       body: JSON.stringify({

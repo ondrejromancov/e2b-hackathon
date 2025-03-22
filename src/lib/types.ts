@@ -8,7 +8,7 @@ type ExecutionResultBase = {
 };
 
 export type ExecutionResultInterpreter = ExecutionResultBase & {
-  template: TemplateIds;
+  template?: TemplateIds;
   stdout: string[];
   stderr: string[];
   runtimeError?: ExecutionError;
@@ -16,7 +16,7 @@ export type ExecutionResultInterpreter = ExecutionResultBase & {
 };
 
 export type ExecutionResultWeb = ExecutionResultBase & {
-  template: TemplateIds;
+  template?: TemplateIds;
   url: string;
 };
 
