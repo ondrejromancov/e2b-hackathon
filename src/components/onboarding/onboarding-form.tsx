@@ -31,7 +31,11 @@ export default function OnboardingForm() {
     console.log("Submitted form data:", formData)
 
     // Navigate to the roadmap generation page with query parameters
-    router.push(`/roadmap?subject=${encodeURIComponent(formData.subject)}&level=${encodeURIComponent(formData.level)}&ageGroup=${encodeURIComponent(formData.ageGroup)}`)
+    router.push(
+      `/roadmap?subject=${encodeURIComponent(formData.subject)}&level=${encodeURIComponent(
+        formData.level
+      )}&ageGroup=${encodeURIComponent(formData.activityType)}`
+    )
   }
 
   const updateFormData = (field: string, value: string) => {
@@ -104,22 +108,22 @@ export default function OnboardingForm() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <h3 className="text-lg font-medium text-center">I am going to</h3>
+              <h3 className="text-lg font-medium text-center">How much time do you have?</h3>
               <div className="grid grid-cols-2 gap-4">
                 {[
                   "2 minutes activity",
                   "30 minute lesson",
                   "90 minute exam",
                   "Compete against opponent",
-                ].map(age => (
+                ].map(activityType => (
                   <Button
-                    key={age}
+                    key={activityType}
                     type="button"
-                    variant={formData.activityType === age ? "default" : "outline"}
+                    variant={formData.activityType === activityType ? "default" : "outline"}
                     className="h-24 flex flex-col items-center justify-center text-center"
-                    onClick={() => updateFormData("activityType", age)}
+                    onClick={() => updateFormData("activityType", activityType)}
                   >
-                    {age}
+                    {activityType}
                   </Button>
                 ))}
               </div>

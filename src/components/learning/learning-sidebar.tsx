@@ -1,13 +1,28 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { CheckCircle, CircleDashed } from "lucide-react";
+import { useEffect, useState } from "react"
+import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { CheckCircle, CircleDashed } from "lucide-react"
 
 // Default roadmap data in case nothing is in localStorage
-const defaultRoadmapData = {
+interface RoadmapData {
+  courseName: string
+  progress: number
+  modules: {
+    id: number
+    title: string
+    completed: boolean
+    lessons: {
+      id: number
+      title: string
+      completed: boolean
+    }[]
+  }[]
+}
+
+const defaultRoadmapData: RoadmapData = {
   courseName: "Introduction to Computer Science",
   progress: 0,
   modules: [
@@ -22,46 +37,46 @@ const defaultRoadmapData = {
       ],
     },
   ],
-};
+}
 
 export default function LearningSidebar() {
-  const [roadmapData, setRoadmapData] = useState(defaultRoadmapData);
-  const [progress, setProgress] = useState(0);
+  const [roadmapData, setRoadmapData] = useState(defaultRoadmapData)
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
     // Retrieve roadmap data from localStorage
-    const storedRoadmap = localStorage.getItem("roadmapData");
+    const storedRoadmap = localStorage.getItem("roadmapData")
     if (storedRoadmap) {
       try {
-        const parsedRoadmap = JSON.parse(storedRoadmap);
-        
+        const parsedRoadmap: RoadmapData = JSON.parse(storedRoadmap)
+
         // Add completed property to modules and lessons if not present
         const processedRoadmap = {
           ...parsedRoadmap,
-          modules: parsedRoadmap.modules.map((module: any) => ({
+          modules: parsedRoadmap.modules.map(module => ({
             ...module,
             completed: false,
-            lessons: module.lessons.map((lesson: any) => ({
+            lessons: module.lessons.map(lesson => ({
               ...lesson,
               completed: false,
             })),
           })),
-        };
-        
-        setRoadmapData(processedRoadmap);
-        
+        }
+
+        setRoadmapData(processedRoadmap)
+
         // Calculate progress (all lessons start as not completed)
-        setProgress(0);
+        setProgress(0)
       } catch (error) {
-        console.error("Error parsing roadmap data:", error);
+        console.error("Error parsing roadmap data:", error)
       }
     }
-  }, []);
+  }, [])
 
   const handleGenerateNewLessons = () => {
     // This would typically trigger a new API call to generate more content
-    alert("This feature would generate new lessons based on your progress and interests.");
-  };
+    alert("This feature would generate new lessons based on your progress and interests.")
+  }
 
   return (
     <div className="flex flex-col h-full overflow-auto">
@@ -79,7 +94,7 @@ export default function LearningSidebar() {
       <Separator />
 
       <div className="flex-1 p-4 space-y-6">
-        {roadmapData.modules.map((module) => (
+        {roadmapData.modules.map(module => (
           <div key={module.id} className="space-y-2">
             <div className="flex items-center gap-2">
               {module.completed ? (
@@ -91,7 +106,7 @@ export default function LearningSidebar() {
             </div>
 
             <div className="ml-7 space-y-1">
-              {module.lessons.map((lesson) => (
+              {module.lessons.map(lesson => (
                 <Button
                   key={lesson.id}
                   variant="ghost"
@@ -120,5 +135,5 @@ export default function LearningSidebar() {
         </Button>
       </div>
     </div>
-  );
+  )
 }

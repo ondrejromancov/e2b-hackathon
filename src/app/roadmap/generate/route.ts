@@ -1,32 +1,29 @@
-import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
+import { NextRequest, NextResponse } from "next/server"
+import OpenAI from "openai"
 
 // Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: process.env.ROADMAP_API_KEY_OPENAI,
-});
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const { subject, level, ageGroup } = await request.json();
+    const { subject, level, ageGroup } = await request.json()
 
     // Validate required fields
     if (!subject || !level || !ageGroup) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
     // Create a prompt for OpenAI to generate a structured roadmap
     const prompt = `
       Create a detailed learning roadmap for ${subject} at a ${level} level for ${ageGroup}.
-      
+
       The roadmap should include:
       1. A course title
       2. 4-6 main modules/chapters
       3. 3-5 lessons per module
-      
+
       Format the response as a JSON object with the following structure:
       {
         "courseName": "Title of the Course",
@@ -46,9 +43,9 @@ export async function POST(request: NextRequest) {
           }
         ]
       }
-      
+
       Make sure the content is educational, age-appropriate, and follows a logical progression from basic to more advanced concepts.
-    `;
+    `
 
     // Call OpenAI API to generate the roadmap
     const completion = await openai.chat.completions.create({
@@ -66,19 +63,19 @@ export async function POST(request: NextRequest) {
       ],
       temperature: 0.7,
       response_format: { type: "json_object" },
-    });
+    })
 
     // Extract and parse the response
-    const responseContent = completion.choices[0].message.content;
-    const roadmapData = JSON.parse(responseContent || "{}");
+    const responseContent = completion.choices[0].message.content
+    const roadmapData = JSON.parse(responseContent || "{}")
 
     // Return the generated roadmap
-    return NextResponse.json({ roadmap: roadmapData });
-  } catch (error: any) {
-    console.error("Error generating roadmap:", error);
+    return NextResponse.json({ roadmap: roadmapData })
+  } catch (error) {
+    console.error("Error generating roadmap:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to generate roadmap" },
+      { error: error instanceof Error ? error.message : "Failed to generate roadmap" },
       { status: 500 }
-    );
+    )
   }
 }

@@ -1,54 +1,55 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { CheckCircle, CircleDashed, ChevronRight } from "lucide-react";
+import { useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle, CircleDashed, ChevronRight } from "lucide-react"
 
 interface Lesson {
-  id: number;
-  title: string;
-  description: string;
-  topics: string[];
-  completed?: boolean;
+  id: number
+  title: string
+  description: string
+  topics: string[]
+  completed?: boolean
 }
 
 interface Module {
-  id: number;
-  title: string;
-  description: string;
-  lessons: Lesson[];
-  completed?: boolean;
+  id: number
+  title: string
+  description: string
+  lessons: Lesson[]
+  completed?: boolean
 }
 
 interface RoadmapProps {
   roadmap: {
-    courseName: string;
-    modules: Module[];
-  };
+    courseName: string
+    modules: Module[]
+  }
 }
 
 export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
-  const [expandedModule, setExpandedModule] = useState<string | null>("module-0");
-  const [expandedLesson, setExpandedLesson] = useState<string | null>(null);
+  const [expandedModule, setExpandedModule] = useState<string | null>("module-0")
+  const [expandedLesson, setExpandedLesson] = useState<string | null>(null)
 
   // Calculate overall progress
-  const totalLessons = roadmap.modules.reduce(
-    (total, module) => total + module.lessons.length,
-    0
-  );
-  
+  const totalLessons = roadmap.modules.reduce((total, module) => total + module.lessons.length, 0)
+
   const completedLessons = roadmap.modules.reduce(
-    (total, module) =>
-      total +
-      module.lessons.filter((lesson) => lesson.completed).length,
+    (total, module) => total + module.lessons.filter(lesson => lesson.completed).length,
     0
-  );
-  
-  const progressPercentage = totalLessons > 0
-    ? Math.round((completedLessons / totalLessons) * 100)
-    : 0;
+  )
+
+  const progressPercentage =
+    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0
+
+  console.log("Progress percentage:", progressPercentage)
 
   return (
     <div className="space-y-6">
@@ -71,16 +72,20 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                     </span>
                     <span>{module.title}</span>
                   </CardTitle>
-                  <CardDescription className="mt-1">
-                    {module.description}
-                  </CardDescription>
+                  <CardDescription className="mt-1">{module.description}</CardDescription>
                 </div>
                 {module.completed ? (
-                  <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-500/10 text-green-600 border-green-500/20"
+                  >
                     Completed
                   </Badge>
                 ) : (
-                  <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                  <Badge
+                    variant="outline"
+                    className="bg-blue-500/10 text-blue-600 border-blue-500/20"
+                  >
                     In Progress
                   </Badge>
                 )}
@@ -90,8 +95,10 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
               <Accordion
                 type="single"
                 collapsible
-                value={expandedModule === `module-${moduleIndex}` ? `module-${moduleIndex}` : undefined}
-                onValueChange={(value) => setExpandedModule(value)}
+                value={
+                  expandedModule === `module-${moduleIndex}` ? `module-${moduleIndex}` : undefined
+                }
+                onValueChange={value => setExpandedModule(value)}
                 className="w-full"
               >
                 <AccordionItem value={`module-${moduleIndex}`} className="border-0">
@@ -105,11 +112,18 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                           key={lesson.id}
                           type="single"
                           collapsible
-                          value={expandedLesson === `lesson-${moduleIndex}-${lessonIndex}` ? `lesson-${moduleIndex}-${lessonIndex}` : undefined}
-                          onValueChange={(value) => setExpandedLesson(value)}
+                          value={
+                            expandedLesson === `lesson-${moduleIndex}-${lessonIndex}`
+                              ? `lesson-${moduleIndex}-${lessonIndex}`
+                              : undefined
+                          }
+                          onValueChange={value => setExpandedLesson(value)}
                           className="w-full border rounded-md overflow-hidden"
                         >
-                          <AccordionItem value={`lesson-${moduleIndex}-${lessonIndex}`} className="border-0">
+                          <AccordionItem
+                            value={`lesson-${moduleIndex}-${lessonIndex}`}
+                            className="border-0"
+                          >
                             <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline hover:bg-muted/30">
                               <div className="flex items-center gap-3 text-left">
                                 {lesson.completed ? (
@@ -150,5 +164,5 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }
