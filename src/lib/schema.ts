@@ -29,10 +29,7 @@ export const interactiveAppSchema = z.object({
     .string()
     .describe("Command to install additional dependencies required by the interactive app."),
   // install_dependencies_ready: z.boolean().describe('Detect if finished identifying additional dependencies.'),
-  port: z
-    .number()
-    .nullable()
-    .describe("Port number used by the resulted interactive app. Null when no ports are exposed."),
+  port: z.number().describe("Port number used by the resulted interactive app."),
   code: z.array(
     z.object({
       file_name: z.string().describe("Name of the file."),
