@@ -9,7 +9,7 @@ import { useRoadmap } from "@/context/roadmap-context"
 import { useRouter, useSearchParams } from "next/navigation"
 
 export default function LearningSidebar() {
-  const { roadmapData, updateProgress } = useRoadmap()
+  const { roadmapData } = useRoadmap()
   const [progress, setProgress] = useState(0)
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -23,13 +23,6 @@ export default function LearningSidebar() {
       setProgress(roadmapData.progress || 0)
     }
   }, [roadmapData])
-
-  // Run updateProgress only once when component mounts
-  useEffect(() => {
-    if (roadmapData) {
-      updateProgress()
-    }
-  }, [roadmapData, updateProgress]) // Empty dependency array means this runs once on mount
 
   const handleGenerateNewLessons = () => {
     // This would typically trigger a new API call to generate more content

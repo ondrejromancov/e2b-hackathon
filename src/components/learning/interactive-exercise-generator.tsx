@@ -21,6 +21,7 @@ interface InteractiveExerciseGeneratorProps {
 }
 const str = Math.random()
 const codeOrFunctionsOrInstructions = str > 0.5 ? "Code" : str > 0.25 ? "Functions" : "Instructions"
+const randomProgress = Math.random() * 100
 
 export function InteractiveExerciseGenerator({
   onExerciseGenerated,
@@ -117,7 +118,7 @@ export function InteractiveExerciseGenerator({
                 Start Interactive Exercise
               </Button>
               {exerciseStarting ? (
-                <Progress value={Math.random() * 100} className="m-4 w-[100%]"></Progress>
+                <Progress value={randomProgress} className="m-4 w-[100%]"></Progress>
               ) : null}
             </div>
           </div>
