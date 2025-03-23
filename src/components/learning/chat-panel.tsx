@@ -22,7 +22,7 @@ export function ChatPanel({
   handleSendMessage,
 }: ChatPanelProps) {
   return (
-    <Card className="flex flex-col h-full">
+    <Card className="flex flex-col h-[calc(100vh-190px)]">
       <CardHeader className="pb-3">
         <CardTitle>AI Learning Assistant</CardTitle>
         <CardDescription>Chat with your AI tutor about your learning topics</CardDescription>

@@ -78,8 +78,8 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   useEffect(() => {
     const updateDimensions = () => {
       setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: containerRef.current?.clientWidth || window.innerWidth,
+        height: containerRef.current?.clientHeight || window.innerHeight,
       })
     }
 
@@ -106,7 +106,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
     const containerWidth = dimensions.width
     const roadmapWidth = containerWidth / roadmaps.length
     const centerX = roadmapWidth * roadmapIndex + roadmapWidth / 2
-    const startY = 120 // Start from top with some padding
+    const startY = 50 // Start from top with some padding
     const moduleVerticalSpacing = 250 // Space between modules
     const lessonVerticalSpacing = 60 // Space between lessons
 
@@ -183,7 +183,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
   }
 
   return (
-    <div className="space-y-6 h-screen w-screen overflow-hidden">
+    <div className="space-y-6 w-2/3 overflow-hidden">
       <div className="text-center mb-4 pt-4">
         <h1 className="text-3xl font-bold mb-2">
           {roadmaps.length === 1 ? roadmaps[0].courseName : "Your personalized learning path"}
@@ -193,9 +193,10 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
             ? `${roadmaps.length} roadmaps with your personalized learning paths`
             : "Your personalized learning path"}
         </p>
+        <p className="text-muted-foreground text-sm">(click on a node to start learning)</p>
       </div>
 
-      <Card className="relative h-[calc(100vh-120px)]">
+      <Card className="relative h-[calc(100vh-250px)]">
         <div ref={containerRef} className="relative w-full h-full overflow-auto">
           <div className="absolute inset-0 w-full h-full">
             {/* Render all roadmaps side by side */}

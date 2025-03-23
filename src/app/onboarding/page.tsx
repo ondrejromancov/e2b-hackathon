@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function OnboardingPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+    <div className="flex min-h-full flex-col items-center justify-center p-4 md:p-8">
       <Card className="w-full max-w-4xl border-none shadow-none">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl md:text-3xl">A few questions...</CardTitle>

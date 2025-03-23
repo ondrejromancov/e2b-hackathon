@@ -84,7 +84,7 @@ function RoadmapContent() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+      <div className="flex min-h-full flex-col items-center justify-center p-4 md:p-8">
         <div className="flex flex-col items-center justify-center min-h-[80vh]">
           <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
           <p className="text-lg text-muted-foreground">
@@ -98,7 +98,7 @@ function RoadmapContent() {
   // If there was an error, show an error message
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+      <div className="flex min-h-full flex-col items-center justify-center p-4 md:p-8">
         <Card className="w-full max-w-4xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl md:text-3xl">Oops! Something went wrong</CardTitle>
@@ -115,7 +115,7 @@ function RoadmapContent() {
   // If we have roadmap data, display it
   if (roadmapData) {
     return (
-      <div className="container py-8 max-w-screen">
+      <div className="container py-8 max-w-full flex items-center justify-center">
         <RoadmapDisplay roadmap={roadmapData} />
         <div className="mt-8 flex justify-center"></div>
       </div>
@@ -124,7 +124,7 @@ function RoadmapContent() {
 
   // Fallback - should not reach here
   return (
-    <div className="flex min-h-screen flex-col p-4 md:p-8">
+    <div className="flex min-h-full flex-col p-4 md:p-8">
       <Card className="w-full max-w-4xl mx-auto">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl md:text-3xl">Something went wrong</CardTitle>
@@ -144,7 +144,7 @@ export default function RoadmapPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
+        <div className="flex min-h-full flex-col items-center justify-center p-4 md:p-8">
           <div className="flex flex-col items-center justify-center min-h-[80vh]">
             <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
             <p className="text-lg text-muted-foreground">Loading roadmap...</p>

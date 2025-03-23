@@ -5,8 +5,8 @@ import Image from "next/image"
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 md:p-8">
-      <Card className="w-full max-w-lg">
+    <div className="flex min-h-full flex-col items-center justify-center p-4 md:p-8">
+      <Card className="w-full max-w-lg self-center mt-20">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl md:text-3xl capitalize">The Learning Company</CardTitle>
         </CardHeader>
