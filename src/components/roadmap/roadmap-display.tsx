@@ -302,6 +302,9 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                   {nodePositions.map((node, index) => {
                     if (node.type === "module") {
                       const moduleNode = node.item as RoadmapModule
+                      // Find the module index in the original modules array
+                      const moduleIndex = roadmapData.modules.findIndex(m => m.id === moduleNode.id)
+                      
                       return (
                         <div
                           key={`module-${roadmapIndex}-${moduleNode.id}`}
@@ -315,15 +318,15 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                         >
                           <div
                             className={`flex items-center justify-center rounded-full ${
-                              index === 0
-                                ? "w-20 h-20 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground"
-                                : moduleNode.completed
-                                ? "w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white"
-                                : "w-16 h-16 bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground"
+                              moduleIndex === 0 
+                                ? 'w-20 h-20 bg-gradient-to-br from-primary to-primary/80 text-primary-foreground' 
+                                : moduleNode.completed 
+                                  ? 'w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 text-white' 
+                                  : 'w-16 h-16 bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground'
                             } shadow-lg border-4 border-white`}
                           >
                             <div className="text-center">
-                              <div className="font-bold text-lg">{index + 1}</div>
+                              <div className="font-bold text-lg">{moduleIndex + 1}</div>
                             </div>
                           </div>
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 text-center whitespace-nowrap font-medium">
@@ -336,7 +339,7 @@ export default function RoadmapDisplay({ roadmap }: RoadmapProps) {
                     } else {
                       const lesson = node.item as Lesson
                       // Find which module this lesson belongs to
-                      const moduleIndex = roadmap.modules.findIndex(module =>
+                      const moduleIndex = roadmapData.modules.findIndex(module => 
                         module.lessons.some(l => l.id === lesson.id)
                       )
 
